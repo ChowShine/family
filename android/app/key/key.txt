@@ -1,0 +1,4 @@
+
+Alias:family_school
+pass:Aa123123
+keytool -list -v -keystore key/family_school.jks
