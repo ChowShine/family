@@ -50,7 +50,8 @@ class MainRun {
     setDesignWHD(1080, 1920);
     WidgetsFlutterBinding.ensureInitialized();
 
-    Constants.chargingEventChannel.receiveBroadcastStream().listen((Object event) {
+    Constants.chargingEventChannel.receiveBroadcastStream().listen(
+        (Object event) {
       Map<String, dynamic> map = json.decode(event) as Map;
       if (map['method'] == "Charging") {
         String chargemsg = map['Charging'];
@@ -67,7 +68,8 @@ class MainRun {
 
     //使用flutter异常上报
     FlutterBugly.postCatchedException(() {
-      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_) {
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+          .then((_) {
         runApp(
           new VideoChatApp(),
         );
@@ -75,7 +77,8 @@ class MainRun {
 
       if (Platform.isAndroid) {
         // 以下两行 设置android状态栏为透明的沉浸。写在组件渲染之后，是为了在渲染后进行set赋值，覆盖状态栏，写在渲染之前MaterialApp组件会覆盖掉这个值。
-        SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(statusBarColor: Colors.transparent);
+        SystemUiOverlayStyle systemUiOverlayStyle =
+            SystemUiOverlayStyle(statusBarColor: Colors.transparent);
         SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
       }
     });

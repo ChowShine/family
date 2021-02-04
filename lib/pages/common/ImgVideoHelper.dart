@@ -42,7 +42,7 @@ class ImageVideoHelper {
         decoration: BoxDecoration(
           image: DecorationImage(
               image: imageProvider,
-              fit: BoxFit.fill,
+              fit: BoxFit.cover,
               colorFilter: ColorFilter.mode(Colors.transparent, BlendMode.colorBurn)),
         ),
       ),

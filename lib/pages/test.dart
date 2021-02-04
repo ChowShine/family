@@ -1,7 +1,6 @@
 //https://www.cnblogs.com/loaderman/p/11345862.html   rxdart使用
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 class RxDartDemo extends StatelessWidget {
   @override
@@ -91,8 +90,5 @@ class _RxDartDemoHomeState extends State<RxDartDemoHome> {
 
 
 
-
-
-
-
-
+//http://www.ptbird.cn/dart-abstract-class-mixin-interface.html
+//https://zhuanlan.zhihu.com/p/133924017

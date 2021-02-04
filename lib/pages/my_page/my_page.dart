@@ -5,16 +5,19 @@ import 'package:family_school/pages/my_page/fs_growth_process.dart';
 import 'package:family_school/pages/my_page/fs_my_children.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:videochat_package/constants/base/base_provider.dart';
 import 'package:videochat_package/library/flustars.dart';
 import 'package:videochat_package/constants/constants.dart';
 import 'package:videochat_package/pages/component/touch_callback.dart';
 import 'dart:io';
-import 'package:videochat_package/constants/cache_pic.dart';
-import 'dart:typed_data';
 import '../common/common_func.dart';
 import '../common/common_param.dart';
 import 'package:videochat_package/constants/customMgr/datetimeMgr.dart';
-import 'package:flutter/services.dart';
+import 'package:family_school/pages/login_page/fs_login.dart';
+import 'package:provider/provider.dart';
+import '../provider/fs_my_provide.dart';
+import '../model/fs_my_model.dart';
+import 'package:videochat_package/constants/customMgr/dlgMgr.dart';
 
 class MyPage extends StatefulWidget {
   @override
@@ -23,13 +26,15 @@ class MyPage extends StatefulWidget {
 
 class _MyPageState extends State<MyPage> {
   String strUserName = "";
-
-  String _strHead = "";
+  MyProvider provider = MyProvider();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    Future.delayed(Duration.zero, () async {
+      await this.provider.reqMy();
+    });
   }
 
   @override
@@ -46,83 +51,84 @@ class _MyPageState extends State<MyPage> {
   }
 
   _buildBody() {
-    return Container(
-        color: CusColorGrey.grey200,
-        child: Column(
-          children: [
-            Expanded(
-              flex: 5,
-              child: Stack(
-                children: <Widget>[
-                  CusPadding(Image.asset(
-                    "${Constants.strImagesDir}fs_my_bk.png",
-                    fit: BoxFit.fill,
-                    width: ScreenMgr.scrWidth,
-                    height: ScreenMgr.scrHeight * 0.4,
-                  )),
-                  Container(
-                    height: ScreenMgr.scrHeight * 0.4,
-                    child: RepaintBoundary(
-                      child: TouchCallBack(
-                        onPressed: () async {
-                          //RouteMgr().push(context, AccountInfoPage());
-                          // await Navigator.push(
-                          //         context,
-                          //         MaterialPageRoute(
-                          //             builder: (_) => AccountInfoPage()))
-                          //     .then((value) {
-                          //   setState(() {
-                          //     //重新刷新更新头像
-                          //   });
-                          // });
-                        },
-                        child: Container(
-                            alignment: Alignment.topCenter,
-                            child: Column(
-                              children: [
-                                VSpacer(
-                                  ScreenMgr.setAdapterSize(220.0),
-                                ),
-                                RepaintBoundary(
-                                  child: ClipOval(
-                                      child: Container(
-                                          width:
-                                              ScreenMgr.setAdapterSize(200.0),
-                                          height:
-                                              ScreenMgr.setAdapterSize(200.0),
-                                          child: Image.asset(
-                                            "${Constants.strImagesDir}fs_my_student_head.png",
-                                            fit: BoxFit.fill,
-                                          ))),
-                                ),
-                                VSpacer(
-                                  ScreenMgr.setAdapterSize(20.0),
-                                ),
-                                CusText(
-                                  "杨幂家长",
-                                  color: Colors.white,
-                                  //fontWeight: FontWeight.bold,
-                                  size: 18.0,
-                                ),
-                                CusText(
-                                  "138****8888",
-                                  color: Colors.white,
-                                  size: CusFontSize.size_12,
-                                ),
-                                Spacer(),
-                              ],
+    return ChangeNotifierProvider<BaseProvider<MyModel>>(
+      create: (_) => provider,
+      child: Consumer<BaseProvider<MyModel>>(
+        builder: (_, provider, child) => this.provider.myData == null
+            ? LoadingDialog()
+            : SingleChildScrollView(
+                child: Container(
+                    color: CusColorGrey.grey200,
+                    child: Column(
+                      children: [
+                        Stack(
+                          children: <Widget>[
+                            CusPadding(Image.asset(
+                              "${Constants.strImagesDir}fs_my_bk.png",
+                              fit: BoxFit.fill,
+                              width: ScreenMgr.scrWidth,
+                              height: ScreenMgr.scrHeight * 0.4,
                             )),
-                      ),
-                    ),
-                  ),
-                  CusPadding(
-                    Container(
-                      margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
-                      child: Column(
-                        children: <Widget>[
-                          Expanded(
-                              flex: 2,
-                              child: Container(
+                            Container(
+                              height: ScreenMgr.scrHeight * 0.4,
+                              child: RepaintBoundary(
+                                child: TouchCallBack(
+                                  onPressed: () async {
+                                    RouteMgr().push(
+                                        context,
+                                        AccountInfoPage(this.provider.myData?.head ?? '',
+                                            this.provider.myData?.username ?? '', this.provider.myData?.phone ?? ''));
+                                    // await Navigator.push(
+                                    //         context,
+                                    //         MaterialPageRoute(
+                                    //             builder: (_) => AccountInfoPage()))
+                                    //     .then((value) {
+                                    //   setState(() {
+                                    //     //重新刷新更新头像
+                                    //   });
+                                    // });
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.topCenter,
+                                    child: Column(
+                                      children: [
+                                        VSpacer(
+                                          ScreenMgr.setAdapterSize(220.0),
+                                        ),
+                                        RepaintBoundary(
+                                          child: ClipOval(
+                                              child: Container(
+                                                  width: ScreenMgr.setAdapterSize(200.0),
+                                                  height: ScreenMgr.setAdapterSize(200.0),
+                                                  child: Image.network(
+                                                    "${this.provider.myData?.head ?? ''}",
+                                                    fit: BoxFit.fill,
+                                                  ))),
+                                        ),
+                                        VSpacer(
+                                          ScreenMgr.setAdapterSize(20.0),
+                                        ),
+                                        CusText(
+                                          "${this.provider.myData?.username ?? ''}",
+                                          color: Colors.white,
+                                          //fontWeight: FontWeight.bold,
+                                          size: 18.0,
+                                        ),
+                                        CusText(
+                                          "${this.provider.myData?.phone?.replaceFirst(new RegExp(r'\d{4}'), '****', 3) ?? ''}",
+                                          color: Colors.white,
+                                          size: CusFontSize.size_12,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            CusPadding(
+                              Container(
+                                  margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+                                  height: ScreenMgr.setAdapterSize(300.0),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(5.0),
                                     color: Colors.white,
@@ -134,21 +140,18 @@ class _MyPageState extends State<MyPage> {
                                           child: TouchCallBack(
                                             onPressed: () {
                                               //buildUpdateDlg();
-                                              RouteMgr()
-                                                  .push(context, MyHomePage());
+                                              RouteMgr().push(context, MyHomePage());
                                             },
                                             child: Container(
                                               child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
+                                                mainAxisAlignment: MainAxisAlignment.center,
                                                 children: <Widget>[
                                                   Image.asset(
                                                     "${Constants.strImagesDir}fs_my_class.png",
                                                     scale: 3.0,
                                                   ),
                                                   VSpacer(
-                                                    ScreenMgr.setAdapterSize(
-                                                        30.0),
+                                                    ScreenMgr.setAdapterSize(30.0),
                                                     color: Colors.transparent,
                                                   ),
                                                   CusText(
@@ -162,21 +165,20 @@ class _MyPageState extends State<MyPage> {
                                           flex: 1,
                                           child: TouchCallBack(
                                             onPressed: () {
-                                              RouteMgr().push(
-                                                  context, AddChildPage());
+                                              RouteMgr().push(context, AddChildPage()).then((value) {
+                                                this.provider.reqMy();
+                                              });
                                             },
                                             child: Container(
                                               child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
+                                                mainAxisAlignment: MainAxisAlignment.center,
                                                 children: <Widget>[
                                                   Image.asset(
                                                     "${Constants.strImagesDir}fs_my_add_student.png",
                                                     scale: 3.0,
                                                   ),
                                                   VSpacer(
-                                                    ScreenMgr.setAdapterSize(
-                                                        30.0),
+                                                    ScreenMgr.setAdapterSize(30.0),
                                                     color: Colors.transparent,
                                                   ),
                                                   CusText(
@@ -190,21 +192,18 @@ class _MyPageState extends State<MyPage> {
                                           flex: 1,
                                           child: TouchCallBack(
                                             onPressed: () {
-                                              RouteMgr().push(
-                                                  context, CommonSetPage());
+                                              RouteMgr().push(context, CommonSetPage());
                                             },
                                             child: Container(
                                               child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
+                                                mainAxisAlignment: MainAxisAlignment.center,
                                                 children: <Widget>[
                                                   Image.asset(
                                                     "${Constants.strImagesDir}fs_my_set.png",
                                                     scale: 3.0,
                                                   ),
                                                   VSpacer(
-                                                    ScreenMgr.setAdapterSize(
-                                                        30.0),
+                                                    ScreenMgr.setAdapterSize(30.0),
                                                     color: Colors.transparent,
                                                   ),
                                                   CusText(
@@ -215,149 +214,104 @@ class _MyPageState extends State<MyPage> {
                                             ),
                                           )),
                                     ],
-                                  ))),
-                        ],
-                      ),
-                    ),
-                    t: ScreenUtil.getInstance().screenHeight * 0.3,
-                  ),
-                  CusPadding(
-                      Container(
-                        padding: EdgeInsets.only(
-                            left: ScreenMgr.setAdapterSize(50.0)),
-                        height: ScreenMgr.setAdapterSize(150.0),
-                        width: ScreenMgr.scrWidth * 0.4,
-                        alignment: Alignment.centerLeft,
-                        child: Stack(
-                          children: [
-                            Image.asset(
-                                "${Constants.strImagesDir}fs_my_date_bk.png"),
-                            Container(
-                                padding: EdgeInsets.only(
-                                    left: ScreenMgr.setAdapterSize(35.0),
-                                    top: ScreenMgr.setAdapterSize(6.0)),
-                                child: CusText(
-                                  "${transDateTime(DateTime.now())} ${DateTimeMgr().getWeekDay(DateTime.now().toString())}",
-                                  color: Colors.white,
-                                  size: CusFontSize.size_15,
-                                ))
+                                  )),
+                              t: ScreenUtil.getInstance().screenHeight * 0.3,
+                            ),
+                            CusPadding(
+                                Container(
+                                  padding: EdgeInsets.only(left: ScreenMgr.setAdapterSize(50.0)),
+                                  height: ScreenMgr.setAdapterSize(150.0),
+                                  width: ScreenMgr.scrWidth * 0.4,
+                                  alignment: Alignment.centerLeft,
+                                  child: Stack(
+                                    children: [
+                                      Image.asset("${Constants.strImagesDir}fs_my_date_bk.png"),
+                                      Container(
+                                          padding: EdgeInsets.only(
+                                              left: ScreenMgr.setAdapterSize(35.0), top: ScreenMgr.setAdapterSize(6.0)),
+                                          child: CusText(
+                                            "${transDateTime(DateTime.now())} ${DateTimeMgr().getWeekDay(DateTime.now().toString())}",
+                                            color: Colors.white,
+                                            size: CusFontSize.size_15,
+                                          ))
+                                    ],
+                                  ),
+                                ),
+                                t: ScreenMgr.setAdapterSize(100.0)),
                           ],
                         ),
-                      ),
-                      t: ScreenMgr.setAdapterSize(100.0)),
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 5,
-              child: CusPadding(
-                Container(
-                  margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                          height: ScreenMgr.setAdapterSize(30),
-                          color: Colors.grey[200]),
-                      Expanded(
-                          flex: 2,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5.0),
-                              color: Colors.white,
-                            ),
-                            padding: EdgeInsets.fromLTRB(15.0, 5.0, 15.0, 0.0),
+                        CusPadding(
+                          Container(
+                            margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
                             child: Column(
-                              children: [
+                              children: <Widget>[
+                                Container(height: ScreenMgr.setAdapterSize(30), color: Colors.grey[200]),
                                 Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: CusText(
-                                      "我的孩子",
-                                      size: 18.0,
-                                      //fontWeight: FontWeight.bold,
-                                    )),
-                                ListTile(
-                                  leading: InkWell(
-                                    onTap: () {
-                                      RouteMgr()
-                                          .push(context, MyChildrenPage());
-                                    },
-                                    child: Image.asset(
-                                        "${Constants.strImagesDir}fs_my_student_head.png"),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                    color: Colors.white,
                                   ),
-                                  title: CusText(
-                                    "张梓涵",
-                                    //fontWeight: FontWeight.bold,
-                                  ),
-                                  subtitle: CusText(
-                                    "三年级二班",
-                                    color: Colors.grey,
-                                  ),
-                                  trailing: Container(
-                                    height: ScreenMgr.setHeight(100.0),
-                                    child: Material(
-                                        borderRadius: BorderRadius.circular(
-                                            ScreenMgr.setAdapterSize(100.0)),
-                                        color:
-                                            Color.fromARGB(255, 58, 158, 255),
-                                        elevation: 0.0,
-                                        child: new MaterialButton(
-                                          onPressed: () {
-                                            // RouteMgr().push(context, MyChildrenPage());
-                                            // RouteMgr().push(context, FSLoginElsePage());
-                                            //RouteMgr().push(context, ScanPage());
-                                          },
+                                  padding: EdgeInsets.fromLTRB(15.0, 5.0, 15.0, 0.0),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                          alignment: Alignment.centerLeft,
                                           child: CusText(
-                                            "默认展示",
-                                            color: Colors.white,
-                                            size: CusFontSize.size_14,
-                                          ),
-                                        )),
+                                            "我的孩子",
+                                            size: 18.0,
+                                            //fontWeight: FontWeight.bold,
+                                          )),
+                                      Container(
+                                          child: ListView.builder(
+                                        itemCount: this.provider.childList.length,
+                                        itemBuilder: (context, index) {
+                                          return _myList(index);
+                                        },
+                                        shrinkWrap: true,
+                                        //禁止ListView.builder滚动
+                                        physics: NeverScrollableScrollPhysics(),
+                                      )),
+                                    ],
+                                  ),
+                                ),
+                                Container(height: ScreenMgr.setAdapterSize(100), color: Colors.grey[200]),
+                                Container(
+                                    height: ScreenMgr.setHeight(130.0),
+                                    padding: EdgeInsets.fromLTRB(
+                                        ScreenMgr.setAdapterSize(150.0), 0.0, ScreenMgr.setAdapterSize(150.0), 0.0),
+                                    alignment: Alignment.center,
+                                    child: TouchCallBack(
+                                      onPressed: () async {
+                                        //await SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                                        // exit(0);
+                                        RouteMgr().push(context, FSLoginPage());
+                                      },
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(26.0),
+                                            color: Color.fromARGB(255, 58, 158, 255)),
+                                        child: Text(
+                                          "退出登录",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                    )),
+                                Container(
+                                  height: ScreenMgr.setAdapterSize(100.0),
+                                  child: Image.asset(
+                                    "${Constants.strImagesDir}fs_my_btm_word.png",
+                                    width: ScreenMgr.scrWidth * 0.6,
                                   ),
                                 )
                               ],
                             ),
-                          )),
-                      Container(
-                          height: ScreenMgr.setAdapterSize(150),
-                          color: Colors.grey[200]),
-                      Container(
-                          height: ScreenMgr.setHeight(130.0),
-                          padding: EdgeInsets.fromLTRB(
-                              ScreenMgr.setAdapterSize(150.0),
-                              0.0,
-                              ScreenMgr.setAdapterSize(150.0),
-                              0.0),
-                          alignment: Alignment.center,
-                          child: TouchCallBack(
-                            onPressed: () async {
-                              //await SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-                              exit(0);
-                            },
-                            child: Container(
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(26.0),
-                                  color: Color.fromARGB(255, 58, 158, 255)),
-                              child: Text(
-                                "退出登录",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          )),
-                      Container(
-                        height: ScreenMgr.setAdapterSize(100.0),
-                        child: Image.asset(
-                          "${Constants.strImagesDir}fs_my_btm_word.png",
-                          width: ScreenMgr.scrWidth * 0.6,
+                          ),
                         ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ));
+                      ],
+                    ))),
+      ),
+    );
   }
 
   //升级对话框
@@ -404,13 +358,9 @@ class _MyPageState extends State<MyPage> {
                               flex: 4,
                               child: Container(
                                   padding: EdgeInsets.fromLTRB(
-                                      ScreenMgr.setAdapterSize(50.0),
-                                      0.0,
-                                      ScreenMgr.setAdapterSize(50.0),
-                                      0.0),
+                                      ScreenMgr.setAdapterSize(50.0), 0.0, ScreenMgr.setAdapterSize(50.0), 0.0),
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Expanded(
                                         child: Text(
@@ -418,9 +368,7 @@ class _MyPageState extends State<MyPage> {
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
-                                              fontSize: CusFontSize.size_14,
-                                              color: Color.fromARGB(
-                                                  255, 102, 102, 102)),
+                                              fontSize: CusFontSize.size_14, color: Color.fromARGB(255, 102, 102, 102)),
                                         ),
                                       ),
                                       Expanded(
@@ -429,9 +377,7 @@ class _MyPageState extends State<MyPage> {
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
-                                              fontSize: CusFontSize.size_14,
-                                              color: Color.fromARGB(
-                                                  255, 102, 102, 102)),
+                                              fontSize: CusFontSize.size_14, color: Color.fromARGB(255, 102, 102, 102)),
                                         ),
                                       ),
                                       Expanded(
@@ -440,9 +386,7 @@ class _MyPageState extends State<MyPage> {
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
-                                              fontSize: CusFontSize.size_14,
-                                              color: Color.fromARGB(
-                                                  255, 102, 102, 102)),
+                                              fontSize: CusFontSize.size_14, color: Color.fromARGB(255, 102, 102, 102)),
                                         ),
                                       ),
                                     ],
@@ -453,20 +397,15 @@ class _MyPageState extends State<MyPage> {
                               child: Container(
                                   height: ScreenMgr.setHeight(130.0),
                                   padding: EdgeInsets.fromLTRB(
-                                      ScreenMgr.setAdapterSize(150.0),
-                                      0.0,
-                                      ScreenMgr.setAdapterSize(150.0),
-                                      0.0),
+                                      ScreenMgr.setAdapterSize(150.0), 0.0, ScreenMgr.setAdapterSize(150.0), 0.0),
                                   alignment: Alignment.center,
                                   child: TouchCallBack(
                                     onPressed: () {},
                                     child: Container(
                                       alignment: Alignment.center,
                                       decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(20.0),
-                                          color: Color.fromARGB(
-                                              255, 88, 158, 255)),
+                                          borderRadius: BorderRadius.circular(20.0),
+                                          color: Color.fromARGB(255, 88, 158, 255)),
                                       child: Text(
                                         "确认更新",
                                         style: TextStyle(color: Colors.white),
@@ -503,6 +442,76 @@ class _MyPageState extends State<MyPage> {
   }
 
   File imageFile;
+
+  _myList(index) {
+    if (this.provider.childList.length > 0) {
+      return Container(
+          padding: EdgeInsets.only(bottom: ScreenMgr.setHeight(50.0)),
+          child: Row(children: <Widget>[
+            Expanded(
+              flex: 2,
+              child: InkWell(
+                onTap: () async {
+                  await RouteMgr().push(context, MyChildrenPage(this.provider.childList[index].childId)).then((value) {
+                    this.provider.reqMy();
+                  });
+                },
+                child: ClipOval(
+                    child: Image.network(
+                  "${this.provider.childList[index].head}",
+                  fit: BoxFit.fill,
+                )),
+              ),
+            ),
+            Spacer(),
+            Expanded(
+              flex: 6,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CusText(
+                    "${this.provider.childList[index].username}",
+                  ),
+                  CusText(
+                    "${this.provider.childList[index].gradeClass}",
+                    color: Colors.grey,
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 3,
+              child: Container(
+                height: ScreenMgr.setHeight(80.0),
+                child: Material(
+                    borderRadius: BorderRadius.circular(ScreenMgr.setAdapterSize(100.0)),
+                    color: this.provider.childList[index].isShow == 1
+                        ? Color.fromARGB(255, 58, 158, 255)
+                        : Color.fromARGB(255, 199, 209, 221),
+                    elevation: 0.0,
+                    child: new MaterialButton(
+                      onPressed: () async {
+                        await this.provider.reqChangeChild(this.provider.childList[index].childId);
+                        setState(() {
+                          this.provider.childList.forEach((item) {
+                            item.isShow = 0;
+                          });
+                          this.provider.childList[index].isShow = 1;
+                        });
+                      },
+                      child: CusText(
+                        "默认展示",
+                        color: Colors.white,
+                        size: 11.0,
+                      ),
+                    )),
+              ),
+            ),
+          ]));
+    } else {
+      return null;
+    }
+  }
 } //end class
 
 // class MyHomePage extends StatefulWidget {

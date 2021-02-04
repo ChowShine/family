@@ -4,15 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:videochat_package/constants/constants.dart';
 
 import '../common/common_param.dart';
+import 'file:///D:/work/003007_yt_videochat_app_flutter/trunk/apps/family_school/lib/pages/provider/fs_my_provide.dart';
+import 'package:oktoast/oktoast.dart';
 
 class AddChildPage extends StatefulWidget {
   @override
   _AddChildPageState createState() => _AddChildPageState();
 }
 
-class _AddChildPageState extends State<AddChildPage> with WidgetsBindingObserver {
+class _AddChildPageState extends State<AddChildPage>
+    with WidgetsBindingObserver {
   final FocusNode _focusNode = new FocusNode();
+  final myController = TextEditingController();
   bool isKeyBoardOn = false;
+  MyProvider provider = MyProvider();
+  var inputVal;
   @override
   void initState() {
     // TODO: implement initState
@@ -74,9 +80,16 @@ class _AddChildPageState extends State<AddChildPage> with WidgetsBindingObserver
                 "提交",
                 style: TextStyle(color: Colors.blue),
               ),
-              onPressed: () {
+              onPressed: () async {
                 if (isKeyBoardOn) {
                   _focusNode.unfocus();
+                }
+                inputVal = myController.text;
+                if (inputVal != '') {
+                  await this.provider.reqAddChild(inputVal);
+                  Navigator.of(context).pop();
+                } else {
+                  showToast('请输入邀请码！');
                 }
               },
             )
@@ -108,8 +121,10 @@ class _AddChildPageState extends State<AddChildPage> with WidgetsBindingObserver
                 Expanded(
                   flex: 2,
                   child: TextField(
-                    decoration: InputDecoration(hintText: "请输入老师提供的邀请码", border: InputBorder.none),
+                    decoration: InputDecoration(
+                        hintText: "请输入老师提供的邀请码", border: InputBorder.none),
                     focusNode: _focusNode,
+                    controller: myController,
                     keyboardType: TextInputType.number,
                   ),
                 ),
@@ -125,5 +140,3 @@ class _AddChildPageState extends State<AddChildPage> with WidgetsBindingObserver
     );
   }
 } //end_class
-
-

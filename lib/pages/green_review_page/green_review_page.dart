@@ -15,9 +15,6 @@ import 'package:provider/provider.dart';
 import 'package:videochat_package/constants/base/base_provider.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:videochat_package/constants/customMgr/spMgr.dart';
-import 'dart:io';
-import 'package:videochat_package/constants/customMgr/dirMgr.dart';
-import 'package:videochat_package/constants/customMgr/fileMgr.dart';
 
 class GreenReviewPage extends StatefulWidget {
   @override

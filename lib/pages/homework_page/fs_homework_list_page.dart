@@ -27,7 +27,7 @@ class _RoomPageState extends State<HomeworkListPage> with SingleTickerProviderSt
   TabController _tabController;
   var _scrollController = new ScrollController(initialScrollOffset: 0);
   HomeworkListProvider provider = HomeworkListProvider();
-  String strReqTime = "";//请求数据的时间
+  String strReqTime = ""; //请求数据的时间
 
   @override
   void initState() {
@@ -317,13 +317,15 @@ class _RoomPageState extends State<HomeworkListPage> with SingleTickerProviderSt
                       onPressed: () async {
                         //_showDatePicker();
                         await RouteMgr().push(context, CalendarPage()).then((value) async {
-                          _dateTime = value;
-                          strReqTime = "${_dateTime.year}-${_dateTime.month}-${_dateTime.day}";
-                          this.provider.endTime = strReqTime;
-                          this.provider.initHomework();
-                          await this.provider.getHomeworkListReq();
+                          if (value != null) {
+                            _dateTime = value;
+                            strReqTime = "${_dateTime.year}-${_dateTime.month}-${_dateTime.day}";
+                            this.provider.endTime = strReqTime;
+                            this.provider.initHomework();
+                            await this.provider.getHomeworkListReq();
+                          }
                         });
-                     /*   await Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                        /*   await Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                           return CalendarPage();
                         })).then((value) async {
                           _dateTime = value;
@@ -425,7 +427,7 @@ class _RoomPageState extends State<HomeworkListPage> with SingleTickerProviderSt
       child: Stack(
         children: [
           Container(
-            height: ScreenMgr.setAdapterSize(550.0),
+            height: ScreenMgr.setAdapterSize(400.0),
             margin: EdgeInsets.fromLTRB(ScreenMgr.setAdapterSize(40.0), 5.0, ScreenMgr.setAdapterSize(40.0), 0.0),
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.white),
             child: Column(
@@ -449,13 +451,13 @@ class _RoomPageState extends State<HomeworkListPage> with SingleTickerProviderSt
                     children: [
                       CusText(
                         "${this.provider.list[index].teacherName}老师 ",
-                        size: CusFontSize.size_16,
+                        size: CusFontSize.size_13,
                         color: CusColorGrey.grey400,
                       ),
                       CusText(
                         "${this.provider.list[index].startTime.substring(5, 19)}",
                         color: Colors.grey[400],
-                        size: 14.0,
+                        size: CusFontSize.size_13,
                       ),
                       Spacer(),
                       RichText(
@@ -463,15 +465,15 @@ class _RoomPageState extends State<HomeworkListPage> with SingleTickerProviderSt
                           TextSpan(
                               text: "已交：",
                               style:
-                                  TextStyle(color: Color.fromARGB(255, 137, 137, 137), fontSize: CusFontSize.size_15)),
+                                  TextStyle(color: Color.fromARGB(255, 137, 137, 137), fontSize: CusFontSize.size_13)),
                           TextSpan(
                               text: "${this.provider.list[index].completeCount}",
                               style:
-                                  TextStyle(color: Color.fromARGB(255, 233, 101, 21), fontSize: CusFontSize.size_15)),
+                                  TextStyle(color: Color.fromARGB(255, 233, 101, 21), fontSize: CusFontSize.size_13)),
                           TextSpan(
                               text: "/${this.provider.list[index].studentCount} ",
                               style:
-                                  TextStyle(color: Color.fromARGB(255, 137, 137, 137), fontSize: CusFontSize.size_15)),
+                                  TextStyle(color: Color.fromARGB(255, 137, 137, 137), fontSize: CusFontSize.size_13)),
                           TextSpan(text: ""),
                         ]),
                       ),
@@ -482,32 +484,38 @@ class _RoomPageState extends State<HomeworkListPage> with SingleTickerProviderSt
                   color: CusColorGrey.grey200,
                 ),
                 Container(
-                  height: ScreenMgr.setAdapterSize(130.0),
+                  height: ScreenMgr.setAdapterSize(100.0),
                   padding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
                   child: Row(
                     children: [
                       CusText(
                         "截止时间: ${this.provider.list[index].endTime.substring(0, 19)}",
                         color: CusColorGrey.grey400,
+                        size: CusFontSize.size_13,
                       ),
                       Spacer(),
                       Container(
-                        height: ScreenMgr.setHeight(100.0),
-                        alignment: Alignment.center,
-                        child: Material(
+                          alignment: Alignment.center,
+                          margin: EdgeInsets.fromLTRB(
+                              0.0, ScreenMgr.setAdapterSize(15.0), 0.0, ScreenMgr.setAdapterSize(15.0)),
+                          padding: EdgeInsets.fromLTRB(
+                              ScreenMgr.setAdapterSize(20.0), 0.0, ScreenMgr.setAdapterSize(20.0), 0.0),
+                          decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(ScreenMgr.setAdapterSize(100.0)),
                             color: this.provider.list[index].completeOwn == 0
                                 ? Color.fromARGB(255, 88, 158, 255)
                                 : CusColorGrey.grey300,
-                            elevation: 0.0,
-                            child: new MaterialButton(
-                              onPressed: () {},
-                              child: CusText(
-                                this.provider.list[index].completeOwn == 0 ? "未提交" : "已完成",
-                                color: Colors.white,
-                              ),
-                            )),
-                      ),
+                          ),
+                          child: new InkWell(
+                            onTap: () {
+                              Constants.log.v("提交");
+                            },
+                            child: CusText(
+                              this.provider.list[index].completeOwn == 0 ? "未提交" : "已完成",
+                              color: Colors.white,
+                              size: CusFontSize.size_13,
+                            ),
+                          )),
                     ],
                   ),
                 )

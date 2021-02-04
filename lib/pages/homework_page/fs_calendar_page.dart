@@ -34,6 +34,7 @@ class _CalendarPageState extends State<CalendarPage> {
   @override
   void dispose() {
     // TODO: implement dispose
+    //this.provider.dispose();
     super.dispose();
   }
 

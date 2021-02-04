@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:videochat_package/constants/constants.dart';
-import 'package:videochat_package/library/flustars.dart';
-import 'package:videochat_package/bean/tag_im_modify_passwd_entity.dart';
 import 'package:videochat_package/bean/tag_WndAllSet_modifypasswd_entity.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:videochat_package/pages/component/touch_callback.dart';
@@ -210,9 +208,6 @@ class ModifyPasswordState extends State<ModifyPasswordPage> {
                     alignment: Alignment.center,
                     height: ScreenMgr.setHeight(120.0),
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-//                          colors: [Color.fromARGB(255, 119, 196, 90),Color.fromARGB(255, 26, 141, 102)]
-                      ),
                       borderRadius: BorderRadius.circular(ScreenMgr.setAdapterSize(100.0)),
                       //border: Border.all(color: Colors.blue)
                     ),

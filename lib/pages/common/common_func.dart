@@ -5,23 +5,16 @@ import 'package:videochat_package/constants/constants.dart';
 import 'common_param.dart';
 import 'dart:math' as math;
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:videochat_package/constants/customMgr/compressMgr.dart';
 import 'package:video_compress/video_compress.dart';
-import 'package:cached_video_player/cached_video_player.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
-import 'package:tus_client/tus_client.dart';
-import 'package:videochat_package/constants/token/teacher_token.dart';
 import 'package:videochat_package/constants/customMgr/stringMgr.dart';
 import 'package:videochat_package/constants/customMgr/fileMgr.dart';
 import 'package:uuid/uuid.dart';
-import 'package:uuid/uuid_util.dart';
-import 'dart:io';
 import 'package:videochat_package/constants/customMgr/dirMgr.dart';
-import 'package:videochat_package/constants/customMgr/fileMgr.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:video_thumbnail/video_thumbnail.dart';
+
 
 /*
 @function：
@@ -506,13 +499,16 @@ showHtmlView(String strHtml) {
       padding: EdgeInsets.all(0.0),
       blockSpacing: 0.0,
       shrinkToFit: true,
+      defaultTextStyle: TextStyle(fontSize: 13.0),
       onLinkTap: (url) {
         // open url in a webview
       },
       onImageTap: (src) {
         // Display the image in large form.
       },
-      customRender: (node, children) {},
+      customRender: (node, children) {
+
+      },
     ),
   );
 }

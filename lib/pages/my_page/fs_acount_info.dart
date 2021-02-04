@@ -3,14 +3,20 @@
 import 'package:flutter/material.dart';
 import 'package:videochat_package/constants/constants.dart';
 import '../common/common_param.dart';
-import 'dart:io';
 import 'package:videochat_package/pages/component/touch_callback.dart';
+import 'file:///D:/work/003007_yt_videochat_app_flutter/trunk/apps/family_school/lib/pages/provider/fs_my_provide.dart';
+
 class AccountInfoPage extends StatefulWidget {
+  final head;
+  final userName;
+  final phone;
+  AccountInfoPage(this.head, this.userName, this.phone);
   @override
   _AccountInfoPageState createState() => _AccountInfoPageState();
 }
 
 class _AccountInfoPageState extends State<AccountInfoPage> {
+  MyProvider provider = MyProvider();
   @override
   void initState() {
     // TODO: implement initState
@@ -67,16 +73,13 @@ class _AccountInfoPageState extends State<AccountInfoPage> {
                 ),
                 Spacer(),
                 TouchCallBack(
-                  onPressed: (){
-
-                  },
-                    child: ClipOval(
-                        child: Image.file(
-                          imageFile,
-                          fit: BoxFit.cover,
-                          width: 60.0,
-                          height: 60.0,
-                        )) ?? Container())
+                  child: ClipOval(
+                      child: Image.network(
+                    "${widget.head}",
+                    fit: BoxFit.fill,
+                  )),
+                  onPressed: () {},
+                )
               ],
             ),
           ),
@@ -94,7 +97,7 @@ class _AccountInfoPageState extends State<AccountInfoPage> {
                 ),
                 Spacer(),
                 CusText(
-                  "18888888888",
+                  "${widget.phone.replaceFirst(new RegExp(r'\d{4}'), '****', 3)}",
                   color: Colors.grey,
                   size: CusFontSize.size_17,
                 ),
@@ -112,7 +115,7 @@ class _AccountInfoPageState extends State<AccountInfoPage> {
                 CusText("昵称", size: CusFontSize.size_17),
                 Spacer(),
                 CusText(
-                  "家长",
+                  "${widget.userName}",
                   color: Colors.grey,
                   size: CusFontSize.size_17,
                 ),
@@ -127,8 +130,4 @@ class _AccountInfoPageState extends State<AccountInfoPage> {
       ),
     );
   }
-
-  File imageFile;
-
-
 } //end_class

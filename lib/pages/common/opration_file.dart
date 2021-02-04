@@ -3,7 +3,6 @@
 import 'dart:io';
 import 'package:videochat_package/constants/customMgr/dirMgr.dart';
 import 'common_param.dart';
-import 'dart:typed_data';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 class OperationFile {

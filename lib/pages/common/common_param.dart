@@ -96,7 +96,7 @@ class CacheVideoPlayerWidgetState extends State<CacheVideoPlayerWidget> {
     return Center(
       child: controller.value.initialized
           ? AspectRatio(
-              aspectRatio: 1.0, //_controller.value.aspectRatio,
+              aspectRatio: 1.0,//controller.value.aspectRatio,
               child: VideoPlayer(controller),
             )
           : Container(),

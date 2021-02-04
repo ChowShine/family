@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:videochat_package/constants/constants.dart';
 import 'package:videochat_package/pages/component/touch_callback.dart';
 import '../common/common_param.dart';
-import 'package:videochat_package/constants/Singleton/handle_cache.dart';
 class CommonSetPage extends StatefulWidget {
   @override
   _CommonSetPageState createState() => _CommonSetPageState();
